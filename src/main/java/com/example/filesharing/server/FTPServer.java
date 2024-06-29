@@ -1,7 +1,5 @@
 package com.example.filesharing.server;
 
-import com.example.filesharing.common.RequestType;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;

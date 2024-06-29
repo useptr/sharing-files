@@ -13,18 +13,16 @@
       <HBox alignment="TOP_CENTER">
          <children>
             <VBox>
-               <children>
-                  <Label text="ip" />
-                  <TextField fx:id="ipTextField" text="0.0.0.0" />
-               </children>
                <HBox.margin>
-                  <Insets left="5.0" right="5.0" top="5.0" />
+                  <Insets left="5.0" right="5.0" top="5.0"/>
                </HBox.margin>
+               <Label text="ip"/>
+               <TextField fx:id="ipTextField" text="0.0.0.0"/>
             </VBox>
             <VBox>
                <children>
                   <Label text="port" />
-                  <TextField fx:id="portTextField" text="" />
+                  <TextField fx:id="portTextField"/>
                </children>
             </VBox>
          </children>

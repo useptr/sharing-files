@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class StartMenuController {
     @FXML
@@ -26,7 +25,7 @@ public class StartMenuController {
         String ip = ipTextField.getText();
         Socket socket = null;
         try {
-            Integer port = Integer.valueOf(portTextField.getText());
+            int port = Integer.parseInt(portTextField.getText());
             try {
                 socket = new Socket(ip, port);
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("client.fxml"));

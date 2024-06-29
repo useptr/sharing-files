@@ -3,8 +3,6 @@ package com.example.filesharing.common;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
 
 public interface FileTransferService {
     /**

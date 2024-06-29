@@ -16,8 +16,8 @@ public class FTPClient implements Runnable {
     RequestInteractor requestInteractor = new RequestInteractor(); // класс отправляющий запросы на сервер
     private static DataOutputStream out = null;
     private DataInputStream in = null;
-    private Socket socket = null;
-    private FilesUpdater filesUpdater = null; // класс обновляющий UI при изменении на сервере
+    private final Socket socket;
+    private FilesUpdater filesUpdater; // класс обновляющий UI при изменении на сервере
     private String downloadDirectory = "C:\\Users\\dude\\Downloads"; // директория для скачивания
     public FTPClient(Socket socket, FilesUpdater filesUpdater) {
         this.socket = socket;
@@ -42,24 +42,25 @@ public class FTPClient implements Runnable {
                     System.out.println("received command " + command + " from server"); // log
                     requestType = RequestType.valueOf(command);
                     switch (requestType) {
-                        case DISCONNECT: {
+                        case DISCONNECT -> {
                             socket.close();
                             return;
                         } // отсоединения сервера
-                        case GET_ALL_FILES: {
+                        case GET_ALL_FILES -> {
                             String str = in.readUTF();
                             System.out.println("received files [" + str + "]"); // log
-                            String[] filesNames = str.split("\\"+FILES_DELIMITER);
+                            String[] filesNames = str.split("\\" + FILES_DELIMITER);
 
                             Platform.runLater(new Runnable() {
-                                @Override public void run() {
+                                @Override
+                                public void run() {
                                     filesUpdater.update(filesNames);
                                 }
                             });
 
                             break;
                         } // получит список файлов доступных для скачивания
-                        case DOWNLOAD_FILE: {
+                        case DOWNLOAD_FILE -> {
                             try {
                                 fileTransfer.receive(downloadDirectory, in);
                             } catch (IOException e) {

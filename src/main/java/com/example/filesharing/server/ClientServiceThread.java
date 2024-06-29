@@ -13,17 +13,17 @@ import java.util.List;
 public class ClientServiceThread implements Runnable {
     public static final String PATH_TO_FILES = "files/";
     public static final String FILES_DELIMITER = "|";
-    private Socket socket;
-    private FTPServer server;
+    private final Socket socket;
+    private final FTPServer server;
     private DataOutputStream  out;
     private DataInputStream in;
-    private RequestInteractor requestInteractor = new RequestInteractor();
+    private final RequestInteractor requestInteractor = new RequestInteractor();
 
     private InetAddress ip = null;
     private int port = -1;
 
-    private FileTransferService fileTransfer = new FileTransferServiceImpl();
-    private DirectoryService directoryService = new DirectoryServiceImpl();
+    private final FileTransferService fileTransfer = new FileTransferServiceImpl();
+    private final DirectoryService directoryService = new DirectoryServiceImpl();
     public ClientServiceThread(Socket socket, FTPServer server) {
         this.socket = socket;
         this.server = server;
@@ -50,28 +50,25 @@ public class ClientServiceThread implements Runnable {
                         System.out.println("received command "+command+" from " + ip() + ':' + port); // log
                     requestType = RequestType.valueOf(command);
                     switch (requestType) {
-                        case DISCONNECT: {
+                        case DISCONNECT -> {
                             closeConnection();
                             return;
                         } // отсоединения клиента
-                        case DOWNLOAD_FILE: {
+                        case DOWNLOAD_FILE -> {
                             String fileName = in.readUTF();
                             requestInteractor.sendRequest(RequestType.DOWNLOAD_FILE, out);
-                            System.out.println("send command "+RequestType.DOWNLOAD_FILE+" to " + ip() + ':' + port); // log
-                            fileTransfer.send(PATH_TO_FILES+File.separator+ fileName, out);
+                            System.out.println("send command " + RequestType.DOWNLOAD_FILE + " to " + ip() + ':' + port); // log
+                            fileTransfer.send(PATH_TO_FILES + File.separator + fileName, out);
                             out.flush();
-                            System.out.println("send file ["+fileName+"] to " + ip() + ':' + port); // log
-                            break;
+                            System.out.println("send file [" + fileName + "] to " + ip() + ':' + port); // log
                         } // скачать файл с сервера
-                        case UPLOAD_FILE: {
+                        case UPLOAD_FILE -> {
                             fileTransfer.receive(PATH_TO_FILES, in);
                             server.notifyFilesChanged();
-                            break;
                         } // загрузить файл на сервер
-                        case GET_ALL_FILES: {
+                        case GET_ALL_FILES -> {
                             sendRequestFilesChanged();
                             System.out.println("send all files to " + ip() + ':' + port); // log
-                            break;
                         } // получит список файлов доступных для скачивания
                     }
                 }
@@ -86,14 +83,14 @@ public class ClientServiceThread implements Runnable {
     }
     public void sendRequestFilesChanged() throws IOException {
         List<String> files = directoryService.files(PATH_TO_FILES);
-        String str = "";
+        StringBuilder str = new StringBuilder();
         for (int i = 0; i < files.size(); ++i) {
-            str += files.get(i);
+            str.append(files.get(i));
             if (i != files.size()-1)
-                str += FILES_DELIMITER;
+                str.append(FILES_DELIMITER);
         }
         requestInteractor.sendRequest(RequestType.GET_ALL_FILES, out);
-        out.writeUTF(str);
+        out.writeUTF(str.toString());
         out.flush();
     }
 

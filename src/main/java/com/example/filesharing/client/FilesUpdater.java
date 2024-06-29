@@ -3,8 +3,8 @@ package com.example.filesharing.client;
 import javafx.scene.control.ListView;
 
 public class FilesUpdater implements FilesUpdateRequestHandler {
-    private ListView filesView;
-    public FilesUpdater(ListView filesView) {
+    private final ListView<String> filesView;
+    public FilesUpdater(ListView<String> filesView) {
         this.filesView = filesView;
     }
     @Override
